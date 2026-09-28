@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РОМАНТИЗМ | Обучающая игра</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
+            color: #3a2a1a;
+            overflow-x: hidden;
+            min-height: 100vh;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #fff9f0 0%, #f0e6d3 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(139, 90, 43, 0.15);
+            border: 3px solid #d4a574;
+        }
+
+        .header h1 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #5c3a21;
+            text-shadow: 2px 2px 4px rgba(139, 90, 43, 0.2);
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+
+        .header .subtitle {
+            font-size: 1.5rem;
+            color: #8b5a2b;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        .progress-container {
+            background: linear-gradient(135deg, #fff9f0 0%, #f0e6d3 100%);
+            border: 3px solid #d4a574;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.1);
+        }
+
+        .progress-label {
+            font-family: 'Times New Roman', Times, serif;
+            color: #5c3a21;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e8dcc8;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #d4a574;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4a574, #c4956a, #b8860b);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(212, 165, 116, 0.5);
+        }
+
+        .elements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .element-btn {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 3px solid #d4a574;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.15);
+        }
+
+        .element-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 90, 43, 0.25);
+            border-color: #b8860b;
+        }
+
+        .element-btn.visited {
+            border-color: #6b8e23;
+            box-shadow: 0 5px 20px rgba(107, 142, 35, 0.2);
+        }
+
+        .element-btn.visited::after {
+            content: '✓';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #6b8e23;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .element-btn h3 {
+            font-family: 'Times New Roman', Times, serif;
+            color: #5c3a21;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .element-btn p {
+            color: #6b5a4a;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .test-btn-container {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .test-btn {
+            background: linear-gradient(135deg, #d4a574, #b8860b);
+            border: none;
+            border-radius: 50px;
+            padding: 25px 70px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .test-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(184, 134, 11, 0.4);
+        }
+
+        .test-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(58, 42, 26, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #d4a574;
+            border-radius: 20px;
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 50px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h2 {
+            font-family: 'Times New Roman', Times, serif;
+            color: #5c3a21;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            border-bottom: 3px solid #d4a574;
+            padding-bottom: 15px;
+        }
+
+        .modal-content h3 {
+            font-family: 'Times New Roman', Times, serif;
+            color: #8b5a2b;
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            font-weight: 700;
+        }
+
+        .modal-content p, .modal-content li {
+            color: #3a2a1a;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .modal-content ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content li {
+            color: #4a3a2a;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: rgba(212, 165, 116, 0.15);
+            border-left: 5px solid #d4a574;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .error-box {
+            background: rgba(205, 92, 92, 0.1);
+            border-left: 5px solid #cd5c5c;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(107, 142, 35, 0.1);
+            border-left: 5px solid #6b8e23;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .painting-frame {
+            margin: 30px auto;
+            max-width: 700px;
+            background: linear-gradient(135deg, #d4a574, #b8860b, #8b6914, #d4a574);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 0 4px #8b6914,
+                0 0 0 8px #d4a574,
+                0 0 0 12px #6b4e0a,
+                0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .painting-inner {
+            background: #2a1f14;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .painting-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 2px;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .painting-fallback {
+            width: 100%;
+            min-height: 350px;
+            background: linear-gradient(135deg, #4a3a2a 0%, #6b5a4a 50%, #4a3a2a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            text-align: center;
+            color: #f5edd6;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .painting-fallback::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 30% 40%, rgba(212, 165, 116, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(139, 90, 43, 0.2) 0%, transparent 50%);
+        }
+
+        .painting-fallback-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #f5edd6;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+
+        .painting-fallback-author {
+            font-size: 1.2rem;
+            color: #d4a574;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .painting-fallback-desc {
+            font-size: 1.05rem;
+            color: #e8dcc8;
+            line-height: 1.6;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+
+        .painting-caption {
+            text-align: center;
+            font-style: italic;
+            color: #6b5a4a;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            padding: 10px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #6b8e23, #556b2f);
+            border: none;
+            border-radius: 30px;
+            padding: 18px 50px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(107, 142, 35, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(107, 142, 35, 0.4);
+        }
+
+        .test-container {
+            display: none;
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #d4a574;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 950px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.2);
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #fff9f0, #f0e6d3);
+            border: 3px solid #d4a574;
+            border-radius: 15px;
+            padding: 18px 30px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.5rem;
+            color: #5c3a21;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.2);
+            font-weight: 600;
+        }
+
+        .question {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(255, 249, 240, 0.8);
+            border-radius: 12px;
+            border: 2px solid #d4a574;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            color: #3a2a1a;
+            margin-bottom: 18px;
+            line-height: 1.7;
+            font-weight: 600;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            background: rgba(255, 249, 240, 0.9);
+            border: 2px solid #d4a574;
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #3a2a1a;
+            font-size: 1.15rem;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .answer-option:hover {
+            background: rgba(212, 165, 116, 0.2);
+            transform: translateX(8px);
+        }
+
+        .answer-option.selected {
+            background: rgba(184, 134, 11, 0.2);
+            border-color: #b8860b;
+        }
+
+        .answer-option.correct {
+            background: rgba(107, 142, 35, 0.2);
+            border-color: #6b8e23;
+        }
+
+        .answer-option.incorrect {
+            background: rgba(205, 92, 92, 0.2);
+            border-color: #cd5c5c;
+        }
+
+        .hint-btn {
+            background: rgba(212, 165, 116, 0.3);
+            border: 2px solid #d4a574;
+            border-radius: 25px;
+            padding: 10px 25px;
+            color: #5c3a21;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .hint-btn:hover {
+            background: rgba(212, 165, 116, 0.5);
+        }
+
+        .hint-text {
+            display: none;
+            color: #6b5a4a;
+            font-style: italic;
+            margin-top: 12px;
+            padding: 15px;
+            background: rgba(212, 165, 116, 0.15);
+            border-radius: 8px;
+        }
+
+        .submit-test-btn {
+            background: linear-gradient(135deg, #6b8e23, #556b2f);
+            border: none;
+            border-radius: 30px;
+            padding: 20px 60px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(107, 142, 35, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .submit-test-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(107, 142, 35, 0.4);
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #d4a574;
+            border-radius: 20px;
+            max-width: 750px;
+            margin: 50px auto;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.2);
+        }
+
+        .results h2 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .results.success h2 { color: #6b8e23; }
+        .results.failure h2 { color: #b8860b; }
+
+        .results p {
+            font-size: 1.4rem;
+            color: #3a2a1a;
+            margin-bottom: 35px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #d4a574, #b8860b);
+            border: none;
+            border-radius: 30px;
+            padding: 18px 50px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(184, 134, 11, 0.3);
+            margin: 12px;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .elements-grid { grid-template-columns: 1fr; }
+            .modal-content { margin: 20px; padding: 30px; }
+            .test-container { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>РОМАНТИЗМ</h1>
+            <div class="subtitle">Путешествие в мир чувств и тайн</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-label">Прогресс изучения: <span id="progress-text">0/12</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="elements-grid" id="elements-grid"></div>
+
+        <div class="test-btn-container">
+            <button class="test-btn" id="test-btn" disabled>Пройти тест</button>
+        </div>
+
+        <div class="test-container" id="test-container"></div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <div class="timer" id="timer" style="display: none;">Время: <span id="timer-value">00:00</span></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <script>
+        const elements = [
+            {
+                id: 1,
+                title: "Родословная слова «Романтизм»",
+                shortDesc: "Откуда пришло это слово?",
+                content: {
+                    definition: "Слово «романтизм» произошло от латинского слова «romanum», что значит «римский». Давным-давно так называли истории, написанные на обычных народных языках (не на учёной латыни). Позже это слово стало означать целое направление в искусстве, где главное — чувства и тайны.",
+                    examples: [
+                        "Средневековые рыцарские романы писались на народных языках, а не на латыни — поэтому их называли «романтическими»",
+                        "Романтики противопоставляли своё искусство строгим правилам древних греков и римлян (классицизму)",
+                        "В России романтизм расцвёл в творчестве Жуковского, Лермонтова и раннего Пушкина"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что «романтизм» связан только с любовью и свиданиями (как в современном слове «романтика»)",
+                        "Ошибка: считать, что романтизм придумали в России — он начался в Германии и Англии",
+                        "Ошибка: думать, что романтики полностью отвергали ум — они просто ставили чувства на первое место"
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "Обстановка: почему появился романтизм?",
+                shortDesc: "Почему люди разочаровались в разуме?",
+                content: {
+                    definition: "Романтизм возник, когда люди разочаровались в силе человеческого разума. После Французской революции лозунги «свобода, равенство, братство» привели к крови и террору. Люди поняли: ум не всегда может сделать мир лучше.",
+                    examples: [
+                        "Французская революция 1789 года началась с благих намерений, но закончилась казнями и хаосом",
+                        "Технический прогресс приносил пользу, но также разрушал природу и старые уклады жизни",
+                        "Классицизм с его строгими правилами не мог объяснить хаос и беспорядок реальной жизни"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что романтизм возник сам по себе, без причин",
+                        "Ошибка: считать, что романтики были против прогресса вообще",
+                        "Ошибка: путать романтизм с другими эпохами. Романтизм — конец XVIII — первая половина XIX века. Возрождение (Ренессанс) было намного раньше — в XIV-XVI веках. А классицизм — это направление, которое как раз и сменилось романтизмом: классицизм ценил разум и порядок, а романтизм — чувства и свободу. Это три разные эпохи и три разных взгляда на мир!"
+                    ]
+                }
+            },
+            {
+                id: 3,
+                title: "Чувства важнее разума",
+                shortDesc: "Эмоции важнее холодного расчёта",
+                content: {
+                    definition: "Романтики считали, что чувства и эмоции важнее холодного расчёта ума. Они верили: чтобы по-настоящему понять жизнь, нужно не думать, а чувствовать. Внимание к внутреннему миру человека стало главным.",
+                    examples: [
+                        "Писатели создавали героев с богатым внутренним миром, показывали их переживания и сомнения",
+                        "Многие произведения были автобиографичными — авторы описывали собственные чувства и опыт",
+                        "Сопереживание (способность чувствовать вместе с героем) стало главным качеством романтического искусства"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что романтики совсем не использовали разум",
+                        "Ошибка: путать важность чувств с полной иррациональностью",
+                        "Ошибка: считать, что в классицизме вообще не было чувств"
+                    ]
+                }
+            },
+            {
+                id: 4,
+                title: "Герой-одиночка",
+                shortDesc: "Образ романтического героя",
+                content: {
+                    definition: "Романтический герой — это человек, который не хочет жить по обычным правилам общества. Он гордый, одинокий, часто бунтарь. Общество его не понимает, и он становится изгнанником — иногда по своей воле.",
+                    examples: [
+                        "Герои Вальтера Скотта — одинокие рыцари, которые противостоят целому миру",
+                        "Байронический герой — разочарованный, гордый бунтарь с тайной в душе",
+                        "Трагический конфликт: герой хочет свободы, но общество его не принимает"
+                    ],
+                    errors: [
+                        "Ошибка: путать романтического героя с античным героем (например, Гераклом)",
+                        "Ошибка: думать, что романтический герой всегда побеждает",
+                        "Ошибка: считать, что одиночество героя — случайность, а не его выбор"
+                    ]
+                }
+            },
+            {
+                id: 5,
+                title: "Природа как живая сила",
+                shortDesc: "Природа — убежище для героя",
+                content: {
+                    definition: "Для романтиков природа — это не просто фон. Это живая, могучая стихия, полная тайн. Она может быть ласковой или жестокой. Природа — убежище для героя, место, где он может найти покой и понять себя.",
+                    examples: [
+                        "Картина Фридриха «Странник над морем тумана»: маленький человек перед огромной, загадочной природой",
+                        "Пейзажи Тёрнера показывают мощь стихии — штормы, закаты, руины замков",
+                        "Романтики верили: в природе скрыты тайны, которые разум не может разгадать"
+                    ],
+                    painting: {
+                        title: "Странник над морем тумана",
+                        author: "Каспар Давид Фридрих, 1818",
+                        description: "Одинокий молодой человек в тёмном плаще стоит на вершине скалы и смотрит на бескрайнее море тумана, из которого выступают горные вершины.",
+                        url: "painting1.jpg"
+                    },
+                    errors: [
+                        "Ошибка: думать, что природа в романтизме — просто красивый фон",
+                        "Ошибка: путать романтические пейзажи с реалистичными (фотографичными)",
+                        "Ошибка: считать, что природа всегда добра к герою"
+                    ]
+                }
+            },
+            {
+                id: 6,
+                title: "Мир тайн и загадок",
+                shortDesc: "То, что нельзя объяснить умом",
+                content: {
+                    definition: "Иррациональное — это то, что нельзя объяснить логикой и формулами. Это сны, интуиция, магия, мистика, сильные необъяснимые чувства. Романтики верили: мир гораздо сложнее и загадочнее, чем кажется. Это не просто «выдумки» — это признание тайны жизни.",
+                    examples: [
+                        "Вещие сны и предчувствия в произведениях Гофмана — это не фантазия, а способ показать скрытую реальность",
+                        "Когда вы стоите на краю обрыва во время грозы и чувствуете трепет — это иррациональное, но абсолютно реальное чувство",
+                        "Сказки братьев Гримм и готические истории — это не просто «выдумки», а попытка понять тайны человеческой души"
+                    ],
+                    info: "Важно понять: иррациональное в романтизме — это НЕ просто «выдуманные драконы». Это признание того, что есть вещи, которые мы чувствуем сердцем, но не можем доказать умом. Интуиция, мистика природы, глубокие переживания — всё это реально, даже если наука не может это объяснить.",
+                    errors: [
+                        "Ошибка: путать романтическую мистику с научной фантастикой",
+                        "Ошибка: думать, что иррациональное = глупость или бред",
+                        "Ошибка: считать, что романтики буквально верили в привидений"
+                    ]
+                }
+            },
+            {
+                id: 7,
+                title: "Внимание к прошлому",
+                shortDesc: "Любовь к старинным легендам",
+                content: {
+                    definition: "Романтики очень любили историю и народные предания. Они обращались к Средневековью, готике, старинным легендам. Это помогало людям понять: кто мы такие, откуда пришли, что делает наш народ особенным.",
+                    examples: [
+                        "Вальтер Скотт писал романы о рыцарях и средневековой Англии",
+                        "Братья Гримм собирали немецкие народные сказки и легенды",
+                        "Готические соборы и руины замков вдохновляли художников и писателей"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что интерес к истории был только у романтиков",
+                        "Ошибка: путать романтический интерес к истории с научным изучением",
+                        "Ошибка: считать, что фольклор интересовал только немцев"
+                    ]
+                }
+            },
+            {
+                id: 8,
+                title: "Литература романтизма",
+                shortDesc: "Великие писатели",
+                content: {
+                    definition: "Романтизм начался в Германии, затем распространился по всей Европе. Великие писатели создали произведения, которые показывают мир романтизма во всём его разнообразии — от сказок до драм.",
+                    examples: [
+                        "Немецкая школа: Шиллер, Гёте (в молодости), братья Гримм, Гейне, Гофман",
+                        "Английская школа: Байрон (герой-одиночка), Шелли, Вальтер Скотт",
+                        "Произведения этих авторов — драмы, повести, поэмы, сказки — показывают мир романтизма целиком"
+                    ],
+                    painting: {
+                        title: "Замок Эбботсфорд",
+                        author: "Дом Вальтера Скотта, начало XIX века",
+                        description: "Замок Эбботсфорд в Шотландии — дом, который построил для себя писатель Вальтер Скотт. Он оформил его в средневековом стиле, как настоящий рыцарский замок.",
+                        url: "painting2.jpg"
+                    },
+                    info: "Интересный факт про Гёте: Иоганн Вольфганг фон Гёте — это ОДИН человек! В молодости он писал о сильных страстях и бунте (романтизм), а в зрелости стал более мудрым и упорядоченным (классицизм). Романтики считали его своим учителем, хотя сам Гёте не очень любил это направление.",
+                    errors: [
+                        "Ошибка: путать Гёте-романтика (молодого) с Гёте-классиком (зрелым) — это один человек!",
+                        "Ошибка: думать, что Байрон писал только о любви",
+                        "Ошибка: считать, что Вальтер Скотт — только исторический писатель"
+                    ]
+                }
+            },
+            {
+                id: 9,
+                title: "Живопись романтизма",
+                shortDesc: "Эмоции на холсте",
+                content: {
+                    definition: "Романтические художники писали картины, полные эмоций, движения и контрастов. Они изображали мощь природы, драматичные сцены, одиноких героев. Каждая картина — это история.",
+                    examples: [
+                        "Каспар Давид Фридрих «Странник над морем тумана» — символ романтического мировосприятия",
+                        "Уильям Тёрнер «Замок Кэрнарвон» — мощь природы и величие истории",
+                        "Эжен Делакруа и Теодор Жерико — французский романтизм с драматизмом и страстью"
+                    ],
+                    painting: {
+                        title: "Замок Кэрнарвон",
+                        author: "Уильям Тёрнер",
+                        description: "Величественные руины средневекового замка в Уэльсе, залитые золотым светом заката. Вода отражает небо, корабли качаются у берега.",
+                        url: "painting3.jpg"
+                    },
+                    errors: [
+                        "Ошибка: путать романтизм в живописи с импрессионизмом",
+                        "Ошибка: думать, что все романтические картины мрачные",
+                        "Ошибка: считать, что Фридрих писал только пейзажи без смысла"
+                    ]
+                }
+            },
+            {
+                id: 10,
+                title: "Музыка романтизма",
+                shortDesc: "Миниатюры и песни без слов",
+                content: {
+                    definition: "Романтики создали новые музыкальные жанры — короткие пьесы (миниатюры), которые передают одно настроение или чувство. Это как музыкальное мгновение, пойманное композитором.",
+                    examples: [
+                        "Музыкальные моменты, экспромты, песни без слов — всё это инструментальные миниатюры",
+                        "Феликс Мендельсон-Бартольди создал жанр «песен без слов» — фортепианные пьесы, которые поют без голоса",
+                        "Миниатюры часто объединялись в циклы, чтобы рассказать целую историю чувств"
+                    ],
+                    errors: [
+                        "Ошибка: путать музыкальную миниатюру с этюдом (упражнением)",
+                        "Ошибка: думать, что романтики не писали большие симфонии",
+                        "Ошибка: считать, что «песни без слов» — это песни без музыки"
+                    ]
+                }
+            },
+            {
+                id: 11,
+                title: "Классицизм и Романтизм: два взгляда на мир",
+                shortDesc: "Сравнение двух эпох",
+                content: {
+                    definition: "Классицизм и романтизм — это два разных способа смотреть на мир. Классицизм ценит порядок и разум, романтизм — свободу и чувства. Это не «хорошо и плохо», а просто разные подходы.",
+                    examples: [
+                        "Классицизм: главное — разум, долг перед обществом, строгие правила, идеалы Древней Греции и Рима",
+                        "Романтизм: главное — чувства, свобода личности, бунт против правил, интерес к тайнам Средневековья",
+                        "Переход от классицизма к романтизму был постепенным — направления даже сосуществовали какое-то время"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что одно направление лучше другого",
+                        "Ошибка: путать черты классицизма и романтизма",
+                        "Ошибка: считать, что переход был мгновенным"
+                    ]
+                }
+            },
+            {
+                id: 12,
+                title: "Разбираем картину: «Странник над морем тумана»",
+                shortDesc: "Что скрывает эта картина?",
+                content: {
+                    definition: "Картина Каспара Давида Фридриха «Странник над морем тумана» (1818) — это воплощение всего романтического мировосприятия. Одинокий человек стоит на скале и смотрит на море тумана.",
+                    examples: [
+                        "Фигура человека спиной к зрителю — мы видим то, что видит он. Это символ одиночества и созерцания",
+                        "Море тумана — символ тайны, неизвестности, бесконечности мира",
+                        "Горные вершины вдали — недостижимый идеал, мечта, к которой стремится душа"
+                    ],
+                    painting: {
+                        title: "Странник над морем тумана",
+                        author: "Каспар Давид Фридрих, 1818",
+                        description: "Самая известная картина эпохи романтизма. Молодой человек в тёмном плаще стоит на скале, подперев руку посохом, и смотрит на море тумана.",
+                        url: "painting1.jpg"
+                    },
+                    errors: [
+                        "Ошибка: думать, что картина показывает конкретного реального человека",
+                        "Ошибка: считать туман просто погодой, а не символом тайны",
+                        "Ошибка: путать эту картину с обычным пейзажем без глубокого смысла"
+                    ]
+                }
+            }
+        ];
+
+        const testQuestions = [
+            {
+                question: "Слово «романтизм» произошло от латинского слова ________, что означает «римский».",
+                answers: ["romanum", "romanticus", "romanus"],
+                correct: 0,
+                hint: "Это слово связано с Римом"
+            },
+            {
+                question: "Романтизм возник, когда люди разочаровались в идеалах ________ после Французской революции.",
+                answers: ["Средневековья", "Просвещения (разума)", "Возрождения"],
+                correct: 1,
+                hint: "Эпоха, когда верили в силу человеческого ума"
+            },
+            {
+                question: "Романтики считали, что ________ важнее холодного расчёта ума.",
+                answers: ["Традиции", "Чувства и эмоции", "Правила"],
+                correct: 1,
+                hint: "То, что мы переживаем сердцем"
+            },
+            {
+                question: "Романтический герой часто не хочет жить по обычным правилам и становится ________.",
+                answers: ["Лидером", "Изгнанником", "Судьёй"],
+                correct: 1,
+                hint: "Тот, кто уходит от общества"
+            },
+            {
+                question: "Природа в романтизме — это ________ стихия, полная тайн.",
+                answers: ["Спокойная", "Живая и могучая", "Предсказуемая"],
+                correct: 1,
+                hint: "Сильная, мощная, как живое существо"
+            },
+            {
+                question: "Иррациональное — это то, что нельзя объяснить ________. Это сны, интуиция, мистика.",
+                answers: ["Логикой и умом", "Чувствами", "Историей"],
+                correct: 0,
+                hint: "То, что доказывают формулами и рассуждениями"
+            },
+            {
+                question: "Братья Гримм собирали немецкие ________ и сказки.",
+                answers: ["Законы", "Народные предания", "Рецепты"],
+                correct: 1,
+                hint: "Старинные истории, передаваемые из поколения в поколение"
+            },
+            {
+                question: "Автором «песен без слов» был немецкий композитор Ф. ________.",
+                answers: ["Бетховен", "Мендельсон-Бартольди", "Шуберт"],
+                correct: 1,
+                hint: "Его фамилия состоит из двух частей через дефис"
+            },
+            {
+                question: "Картина «Странник над морем тумана» принадлежит кисти художника К.Д. ________.",
+                answers: ["Делакруа", "Фридриха", "Тёрнера"],
+                correct: 1,
+                hint: "Немецкий художник-романтик"
+            },
+            {
+                question: "В английской литературе романтизм представляли Байрон, Шелли и ________.",
+                answers: ["Диккенс", "Вальтер Скотт", "Джейн Остин"],
+                correct: 1,
+                hint: "Автор исторических романов о рыцарях и средневековье"
+            },
+            {
+                question: "Романтики обращались к эпохе ________ как источнику вдохновения.",
+                answers: ["Античности", "Средневековья", "Нового времени"],
+                correct: 1,
+                hint: "Эпоха рыцарей, замков и легенд"
+            },
+            {
+                question: "Жанр коротких музыкальных пьес для передачи одного настроения называется ________.",
+                answers: ["Симфония", "Миниатюра", "Опера"],
+                correct: 1,
+                hint: "Маленькое произведение, как мини-версия большого"
+            }
+        ];
+
+        let visitedElements = new Set();
+        let timerInterval;
+        let seconds = 0;
+
+        function init() {
+            renderElements();
+            updateProgress();
+        }
+
+        function renderElements() {
+            const grid = document.getElementById('elements-grid');
+            grid.innerHTML = '';
+            
+            elements.forEach(el => {
+                const btn = document.createElement('div');
+                btn.className = 'element-btn';
+                btn.id = `element-${el.id}`;
+                btn.innerHTML = `
+                    <h3>${el.title}</h3>
+                    <p>${el.shortDesc}</p>
+                `;
+                btn.onclick = () => openCard(el);
+                grid.appendChild(btn);
+            });
+        }
+
+        function openCard(element) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            
+            let infoHtml = '';
+            if (element.content.info) {
+                infoHtml = `
+                    <h3>Важно понять</h3>
+                    <div class="info-box">${element.content.info}</div>
+                `;
+            }
+
+            let paintingHtml = '';
+            if (element.content.painting) {
+                const p = element.content.painting;
+                paintingHtml = `
+                    <div class="painting-frame">
+                        <div class="painting-inner">
+                            <img class="painting-img" src="${p.url}" alt="${p.title}" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="painting-fallback" style="display:none;">
+                                <div class="painting-fallback-title">${p.title}</div>
+                                <div class="painting-fallback-author">${p.author}</div>
+                                <div class="painting-fallback-desc">${p.description}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painting-caption">${p.title} — ${p.author}</div>
+                `;
+            }
+            
+            content.innerHTML = `
+                <h2>${element.title}</h2>
+                ${paintingHtml}
+                <h3>Что это такое?</h3>
+                <p>${element.content.definition}</p>
+                
+                <h3>Примеры</h3>
+                ${element.content.examples.map(ex => `
+                    <div class="example-box">${ex}</div>
+                `).join('')}
+                
+                ${infoHtml}
+                
+                <h3>Типичные ошибки</h3>
+                ${element.content.errors.map(err => `
+                    <div class="error-box">${err}</div>
+                `).join('')}
+                
+                <button class="close-btn" onclick="closeCard(${element.id})">Понял!</button>
+            `;
+            
+            modal.style.display = 'block';
+            visitedElements.add(element.id);
+            document.getElementById(`element-${element.id}`).classList.add('visited');
+            updateProgress();
+        }
+
+        function closeCard(elementId) {
+            document.getElementById('modal').style.display = 'none';
+            checkTestAvailability();
+        }
+
+        function updateProgress() {
+            const progress = visitedElements.size;
+            const total = elements.length;
+            document.getElementById('progress-text').textContent = `${progress}/${total}`;
+            document.getElementById('progress-fill').style.width = `${(progress / total) * 100}%`;
+        }
+
+        function checkTestAvailability() {
+            const testBtn = document.getElementById('test-btn');
+            if (visitedElements.size === elements.length) {
+                testBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('test-btn').onclick = function() {
+            document.getElementById('elements-grid').style.display = 'none';
+            document.querySelector('.test-btn-container').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            
+            startTimer();
+            renderTest();
+        };
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer-value').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderTest() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '<h2 style="font-family: Times New Roman; color: #5c3a21; margin-bottom: 35px; text-align: center; font-size: 2.2rem; border-bottom: 3px solid #d4a574; padding-bottom: 15px;">Тест по романтизму</h2>';
+            
+            testQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">
+                        <strong>Вопрос ${index + 1}:</strong> ${q.question}
+                    </div>
+                    <div class="answers">
+                        ${q.answers.map((ans, ansIndex) => `
+                            <div class="answer-option" onclick="selectAnswer(${index}, ${ansIndex})">
+                                ${ans}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="hint-btn" onclick="showHint(${index})">Подсказка</button>
+                    <div class="hint-text" id="hint-${index}">${q.hint}</div>
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'submit-test-btn';
+            submitBtn.textContent = 'Проверить ответы';
+            submitBtn.onclick = checkAnswers;
+            container.appendChild(submitBtn);
+        }
+
+        function selectAnswer(questionIndex, answerIndex) {
+            const question = document.querySelectorAll('.question')[questionIndex];
+            const options = question.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[answerIndex].classList.add('selected');
+            options[answerIndex].dataset.selected = 'true';
+        }
+
+        function showHint(index) {
+            document.getElementById(`hint-${index}`).style.display = 'block';
+        }
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            const total = testQuestions.length;
+            
+            testQuestions.forEach((q, index) => {
+                const question = document.querySelectorAll('.question')[index];
+                const options = question.querySelectorAll('.answer-option');
+                let selected = -1;
+                
+                options.forEach((opt, optIndex) => {
+                    if (opt.dataset.selected === 'true') {
+                        selected = optIndex;
+                    }
+                    opt.onclick = null;
+                });
+                
+                if (selected === q.correct) {
+                    correct++;
+                    options[selected].classList.add('correct');
+                } else {
+                    if (selected !== -1) {
+                        options[selected].classList.add('incorrect');
+                    }
+                    options[q.correct].classList.add('correct');
+                }
+            });
+            
+            setTimeout(() => showResults(correct, total), 1500);
+        }
+
+        function showResults(correct, total) {
+            document.getElementById('test-container').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            if (correct === total) {
+                results.className = 'results success';
+                results.innerHTML = `
+                    <h2>Отлично!</h2>
+                    <p>Ты настоящий знаток романтизма!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                `;
+                createConfetti();
+            } else {
+                results.className = 'results failure';
+                results.innerHTML = `
+                    <h2>Почти получилось!</h2>
+                    <p>Перечитай карточки и попробуй снова!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                    <button class="restart-btn" onclick="retakeTest()">Пройти тест снова</button>
+                `;
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#d4a574', '#b8860b', '#6b8e23', '#cd853f', '#8b7355'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+
+        function restart() {
+            visitedElements.clear();
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('elements-grid').style.display = 'grid';
+            document.querySelector('.test-btn-container').style.display = 'block';
+            document.querySelector('.progress-container').style.display = 'block';
+            document.getElementById('test-btn').disabled = true;
+            renderElements();
+            updateProgress();
+        }
+
+        function retakeTest() {
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            startTimer();
+            renderTest();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
